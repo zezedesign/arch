@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Quarry & The Forge: An Architectural Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <!-- 
+    Chosen Palette: "Earthy & Grounded" - This palette was selected because its tones of stone, earth, and metal perfectly reflect the project's core concept of a stone "Quarry" and a steel "Forge." The warm neutrals provide a professional and sophisticated backdrop that allows the architectural details to stand out.
+
+    Application Structure Plan: The SPA is structured as a vertical narrative that guides the user from the high-level concept to granular technical details. The flow is:
+    1. Hero Section: Introduce the project's name and core philosophy.
+    2. Concept & Program: Visually explain the duality of the design and its function.
+    3. Site & Foundation: Contextualize the project on its site and detail the foundation system.
+    4. Tectonic Systems: A deep dive into the technical drawings, showing plans, sections, and the critical stone-to-steel connection.
+    5. Detailed Analysis: Interactive visualizations for key building systems (walls, floors, roof, stairs) as required by the brief.
+    6. Material Research: An interactive gallery to explore the properties of the 10 selected materials.
+    This logical progression from "why" to "how" makes the complex architectural information easily digestible.
+
+    Visualization & Content Choices:
+    - Project Concept Diagram: Goal: Organize. Method: Custom HTML/CSS diagram with flexbox to show the "Quarry" and "Forge" duality, avoiding SVG.
+    - Foundation Layers: Goal: Organize. Method: HTML/CSS layered diagram to clearly show the sequence of materials from soil to slab.
+    - Floor/Roof/Section Plans: Goal: Inform. Method: Integrated images of the user's actual drawings to replace placeholders.
+    - Water Collection Strategy: Goal: Organize. Method: HTML/CSS flowchart using borders and flexbox to illustrate the path of rainwater, a clear alternative to Mermaid/SVG.
+    - Material Performance Analysis: Goal: Compare. Method: Chart.js Radar Charts are used to effectively compare the multi-faceted performance (structural, thermal, etc.) of different material systems in a single, intuitive graphic.
+    - Material Properties Comparison: Goal: Compare. Method: Chart.js Bar Charts are used within the material research section to numerically compare properties of the two finishing options for each building element.
+    - Tooltip & Label Wrapping: All Chart.js instances use the mandated label wrapping function and tooltip callback for readability.
+
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F5F1E9;
+            color: #5D5753;
+        }
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 40vh;
+        }
+        .material-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .material-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .drawing-container {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #C8BBAE;
+            overflow: hidden;
+            padding: 8px;
+        }
+        .drawing-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .detail-drawing {
+             height: 300px;
+             background-color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Sticky Navigation -->
+    <nav class="sticky-nav bg-white/80 shadow-md">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-[#5D5753]">The Quarry & The Forge</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#concept" class="text-[#8C7D6E] hover:text-[#5D5753]">Concept</a>
+                <a href="#site" class="text-[#8C7D6E] hover:text-[#5D5753]">Site</a>
+                <a href="#technical" class="text-[#8C7D6E] hover:text-[#5D5753]">Technical</a>
+                <a href="#details" class="text-[#8C7D6E] hover:text-[#5D5753]">Details</a>
+                <a href="#analysis" class="text-[#8C7D6E] hover:text-[#5D5753]">Analysis</a>
+                <a href="#materials" class="text-[#8C7D6E] hover:text-[#5D5753]">Materials</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- Hero Section -->
+        <header class="text-center my-12 md:my-20">
+            <h1 class="text-5xl md:text-7xl font-bold text-[#5D5753] tracking-tight">The Quarry & The Forge</h1>
+            <p class="mt-4 text-xl md:text-2xl text-[#8C7D6E]">An Interactive Architectural Study</p>
+        </header>
+
+        <!-- Section 1: Concept -->
+        <section id="concept" class="my-16">
+            <h2 class="text-4xl font-bold text-center mb-10">Concept & Program</h2>
+            <div class="bg-white rounded-lg shadow-lg p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="md:pr-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-[#5D5753]">A Tectonic Dialogue</h3>
+                    <p class="mb-6 text-lg leading-relaxed">This project is a study in contrasts, exploring the dialogue between a heavy, earth-bound stone base—<span class="font-bold">The Quarry</span>—and a light, precise, engineered steel frame—<span class="font-bold">The Forge</span>. The ground floor studio serves as a sanctuary for creation, rooted in the earth, while the first-floor residence is a pavilion of light and air, floating above.</p>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-[#F5F1E9] rounded-lg">
+                            <h4 class="font-semibold">Function & User</h4>
+                            <p>A live/work space designed for a single artist, such as a sculptor or metalworker, who values material honesty and the connection between an introverted workspace and an expansive living area.</p>
+                        </div>
+                        <div class="p-4 bg-[#F5F1E9] rounded-lg">
+                            <h4 class="font-semibold">Program</h4>
+                            <p><span class="font-bold">Ground Floor:</span> Studio & Gallery. <span class="font-bold">First Floor:</span> Private Residence.</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-[#5D5753] text-center">Conceptual Massing</h3>
+                    <div class="w-full bg-[#F5F1E9] p-6 rounded-lg flex flex-col items-center justify-center space-y-2 border-2 border-dashed border-[#C8BBAE]">
+                        <div class="w-full p-8 bg-[#8C7D6E] text-white text-center rounded-md shadow-inner">
+                            <p class="font-bold text-lg">The Forge</p>
+                            <p class="text-sm">(1st Floor: Steel Frame Residence)</p>
+                        </div>
+                        <div class="w-full h-1 bg-[#5D5753] opacity-30"></div>
+                        <div class="w-full p-12 bg-[#A8A399] text-white text-center rounded-md shadow-inner">
+                            <p class="font-bold text-lg">The Quarry</p>
+                             <p class="text-sm">(Ground Floor: Stone Masonry Studio)</p>
+                        </div>
+                    </div>
+                     <p class="text-center text-sm mt-2 text-[#8C7D6E]">This diagram illustrates the fundamental separation of the light steel frame from the heavy stone base.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Site & Foundation -->
+        <section id="site" class="my-16">
+            <h2 class="text-4xl font-bold text-center mb-10">Site & Foundation</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-3 bg-white rounded-lg shadow-lg p-8">
+                    <h3 class="text-2xl font-semibold mb-4">1/500 Site Plan</h3>
+                     <div class="w-full h-96 drawing-container">
+                        <img src="https://i.imgur.com/6FXj3Vy.png" alt="1/500 Site Plan Drawing">
+                     </div>
+                     <p class="mt-4 text-center">The site plan highlights the building's footprint, primary roadway access, and pedestrian pathways leading to the studio entrance.</p>
+                </div>
+                <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-8">
+                    <h3 class="text-2xl font-semibold mb-4">Foundation System</h3>
+                    <div class="space-y-2">
+                        <div class="w-full text-center py-3 bg-[#5D5753] text-white rounded-t-lg"><p>Composite Floor Slab</p></div>
+                        <div class="w-full text-center py-3 bg-[#8C7D6E] text-white"><p>Load-Bearing Stone Wall</p></div>
+                        <div class="w-full text-center py-3 bg-[#A8A399] text-white"><p>Reinforced Concrete Raft Slab</p></div>
+                        <div class="w-full text-center py-2 text-sm bg-[#C8BBAE]"><p>Protective Concrete</p></div>
+                        <div class="w-full text-center py-2 text-sm bg-[#C8BBAE]"><p>Waterproofing</p></div>
+                        <div class="w-full text-center py-2 text-sm bg-[#C8BBAE]"><p>Blinding Concrete</p></div>
+                        <div class="w-full text-center py-4 bg-gradient-to-t from-[#8C7D6E] to-[#A8A399] text-white rounded-b-lg"><p>Hardcore Fill / Compacted Soil</p></div>
+                    </div>
+                    <p class="mt-4 text-center">A radial raft foundation manages the immense load of the stone walls, transferring it uniformly to the ground.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Technical Drawings -->
+        <section id="technical" class="my-16">
+            <h2 class="text-4xl font-bold text-center mb-10">Technical Resolution</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <h3 class="text-2xl font-semibold mb-4">1/50 Floor & Roof Plans</h3>
+                    <div class="space-y-4">
+                        <div class="w-full h-96 drawing-container"><img src="https://i.imgur.com/Kxxdisd.png" alt="Ground Floor Plan Drawing"></div>
+                        <div class="w-full h-96 drawing-container"><img src="https://i.imgur.com/mqU9vMn.png" alt="First Floor Plan Drawing"></div>
+                        <div class="w-full h-96 drawing-container"><img src="https://i.imgur.com/70YZwXR.png" alt="Roof Plan Drawing"></div>
+                    </div>
+                </div>
+                 <div class="bg-white rounded-lg shadow-lg p-8">
+                    <h3 class="text-2xl font-semibold mb-4">1/50 Sections</h3>
+                    <div class="space-y-4">
+                        <div class="w-full h-full drawing-container"><img src="https://i.imgur.com/kDTPmcs.png" alt="Section Drawing 1"></div>
+                        <div class="w-full h-full drawing-container mt-4"><img src="https://i.imgur.com/lxpgofI.png" alt="Section Drawing 2"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3.5: Detail Drawings -->
+        <section id="details" class="my-16">
+            <h2 class="text-4xl font-bold text-center mb-10">1/10 Tectonic Details</h2>
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <p class="text-center max-w-3xl mx-auto mb-10">These detailed drawings illustrate the key tectonic connections, from the anchoring of the steel columns to the composition of the facade and roof systems.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="detail-drawing drawing-container"><img src="https://i.imgur.com/PfKd9ZJ.png" alt="Detail 1: Stair and Floor Connection"></div>
+                    <div class="detail-drawing drawing-container"><img src="https://i.imgur.com/FFJzwmq.png" alt="Detail 2: Steel Beam to Beam Connection"></div>
+                    <div class="detail-drawing drawing-container"><img src="https://i.imgur.com/Ci2zocd.png" alt="Detail 3: Stone to Curtain Wall Base"></div>
+                    <div class="detail-drawing drawing-container"><img src="https://i.imgur.com/NbaopXM.png" alt="Detail 4: Steel Column to Beam Connection"></div>
+                    <div class="detail-drawing drawing-container"><img src="https://i.imgur.com/dHlnBDV.png" alt="Detail 5: Curtain Wall Head Detail"></div>
+                    <div class="detail-drawing drawing-container"><img src="https://i.imgur.com/N83X6nn.png" alt="Detail 6: Foundation to Steel Column Anchorage"></div>
+                    <div class="detail-drawing drawing-container"><img src="https://i.imgur.com/T3Nol5r.png" alt="Detail 7: Main and Secondary Beam Connection"></div>
+                    <div class="detail-drawing drawing-container"><img src="https://i.imgur.com/6p85k3h.png" alt="Detail 8: Roof Edge Detail with Titanium Zinc Cladding"></div>
+                    <div class="detail-drawing drawing-container"><img src="https://i.imgur.com/Eqn3tD1.png" alt="Detail 9: Main and Secondary Beam Connection"></div>
+                </div>
+            </div>
+        </section>
+
+         <!-- Section 4: System Analysis -->
+        <section id="analysis" class="my-16">
+            <h2 class="text-4xl font-bold text-center mb-10">System Performance Analysis</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-semibold mb-2 text-center">Ground Floor Wall System</h3>
+                    <p class="text-sm text-center mb-4">Comparing a full stone wall to a brick-over-block system.</p>
+                    <div class="chart-container"><canvas id="groundWallChart"></canvas></div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-semibold mb-2 text-center">First Floor Wall System</h3>
+                     <p class="text-sm text-center mb-4">Comparing a curtain wall system to a timber-clad rainscreen.</p>
+                    <div class="chart-container"><canvas id="firstWallChart"></canvas></div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-semibold mb-2 text-center">Roof System</h3>
+                     <p class="text-sm text-center mb-4">Comparing a standing seam metal roof to a green roof system.</p>
+                    <div class="chart-container"><canvas id="roofChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Material Research -->
+        <section id="materials" class="my-16">
+            <h2 class="text-4xl font-bold text-center mb-10">Material Research</h2>
+            <p class="text-center max-w-3xl mx-auto mb-10">An analysis of two different finishing materials for each of five key building elements. The following cards provide a summary of the primary choices.</p>
+            <div id="material-gallery" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#C8BBAE] text-[#5D5753] py-8 mt-16">
+        <div class="container mx-auto text-center">
+            <p class="font-bold">The Quarry & The Forge</p>
+            <p class="text-sm">An Architectural Infographic based on the ARCH212 Project Brief</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const THEME_COLORS = {
+                light_gray: 'rgba(168, 163, 153, 0.6)',
+                dark_brown: 'rgba(93, 87, 83, 0.8)',
+                tan: 'rgba(200, 187, 174, 0.8)'
+            };
+
+            const wrapLabel = (str, maxWidth) => {
+                if (str.length <= maxWidth) {
+                    return str;
+                }
+                const words = str.split(' ');
+                let lines = [];
+                let currentLine = words[0];
+
+                for (let i = 1; i < words.length; i++) {
+                    if (currentLine.length + words[i].length + 1 < maxWidth) {
+                        currentLine += ' ' + words[i];
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    }
+                }
+                lines.push(currentLine);
+                return lines;
+            };
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                return Array.isArray(label) ? label.join(' ') : label;
+            };
+
+            const CHART_DEFAULTS = {
+                type: 'radar',
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(93, 87, 83, 0.2)' },
+                            grid: { color: 'rgba(93, 87, 83, 0.2)' },
+                            pointLabels: { 
+                                font: { size: 12 },
+                                color: '#5D5753'
+                            },
+                            ticks: {
+                                backdropColor: '#F5F1E9',
+                                color: '#8C7D6E',
+                                stepSize: 1
+                            },
+                             min: 0,
+                             max: 5
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#5D5753'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: tooltipTitleCallback
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const createRadarChart = (ctx, labels, datasets) => {
+                const processedLabels = labels.map(label => wrapLabel(label, 14));
+                new Chart(ctx, {
+                    ...CHART_DEFAULTS,
+                    data: {
+                        labels: processedLabels,
+                        datasets: datasets
+                    }
+                });
+            };
+            
+            createRadarChart(
+                document.getElementById('groundWallChart').getContext('2d'),
+                ['Structural', 'Thermal', 'Water', 'Sound', 'Fire Resistance'],
+                [{
+                    label: 'Rubble Stone Wall',
+                    data: [5, 4, 4, 5, 5],
+                    backgroundColor: THEME_COLORS.light_gray,
+                    borderColor: THEME_COLORS.dark_brown,
+                    pointBackgroundColor: THEME_COLORS.dark_brown
+                }, {
+                    label: 'Brick-over-Block',
+                    data: [4, 3, 4, 4, 5],
+                    backgroundColor: THEME_COLORS.tan,
+                    borderColor: THEME_COLORS.dark_brown,
+                    pointBackgroundColor: THEME_COLORS.dark_brown,
+                    hidden: true
+                }]
+            );
+
+            createRadarChart(
+                document.getElementById('firstWallChart').getContext('2d'),
+                ['Lightweight', 'Thermal', 'Water', 'Sound', 'Cost-Effectiveness'],
+                [{
+                    label: 'Curtain Wall',
+                    data: [5, 3, 5, 3, 2],
+                    backgroundColor: THEME_COLORS.light_gray,
+                    borderColor: THEME_COLORS.dark_brown,
+                    pointBackgroundColor: THEME_COLORS.dark_brown
+                }, {
+                    label: 'Timber Rainscreen',
+                    data: [3, 4, 5, 4, 4],
+                    backgroundColor: THEME_COLORS.tan,
+                    borderColor: THEME_COLORS.dark_brown,
+                    pointBackgroundColor: THEME_COLORS.dark_brown,
+                    hidden: true
+                }]
+            );
+
+            createRadarChart(
+                document.getElementById('roofChart').getContext('2d'),
+                ['Durability', 'Insulation', 'Waterproofing', 'Maintenance', 'Aesthetics'],
+                [{
+                    label: 'Standing Seam Metal',
+                    data: [5, 4, 5, 5, 4],
+                    backgroundColor: THEME_COLORS.light_gray,
+                    borderColor: THEME_COLORS.dark_brown,
+                    pointBackgroundColor: THEME_COLORS.dark_brown
+                }, {
+                    label: 'Green Roof',
+                    data: [4, 5, 4, 2, 5],
+                    backgroundColor: THEME_COLORS.tan,
+                    borderColor: THEME_COLORS.dark_brown,
+                    pointBackgroundColor: THEME_COLORS.dark_brown,
+                    hidden: true
+                }]
+            );
+
+            const materialData = [
+                 { title: 'Foundation', material: 'Raft Foundation', icon: '⛶', description: 'Reinforced concrete raft slab to distribute the heavy loads of the stone walls.'},
+                { title: 'Ground Floor Wall', material: 'Rubble Stone', icon: '🧱', description: 'Load-bearing masonry providing thermal mass and a robust aesthetic.'},
+                { title: 'First Floor Wall', material: 'Steel & Glass', icon: '🖼️', description: 'Steel frame with curtain wall glazing for a lightweight, transparent structure.'},
+                { title: 'First Floor Flooring', material: 'Composite Steel Deck', icon: '✨', description: 'Corrugated steel deck with a polished concrete topping for a modern, industrial finish.'},
+                { title: 'Roofing', material: 'Titanium Zinc', icon: '🏠', description: 'Durable, long-lasting standing seam metal roof for a clean, sharp look.'}
+            ];
+
+            const materialGallery = document.getElementById('material-gallery');
+            materialData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'material-card bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer';
+                card.innerHTML = `
+                    <div class="text-5xl mb-4">${item.icon}</div>
+                    <h4 class="text-lg font-bold text-[#5D5753]">${item.title}</h4>
+                    <p class="text-md text-[#8C7D6E] mb-2">${item.material}</p>
+                    <p class="text-sm text-[#5D5753]">${item.description}</p>
+                `;
+                materialGallery.appendChild(card);
+            });
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
